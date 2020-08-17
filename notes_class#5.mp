@@ -86,4 +86,44 @@ A promessa é a conclusão das somas dos dados na inserção do banco de dados: 
 
 Depois eu rodo o test.js para encontrar erros. Se tudo certo, deleto o arquivo database.sqlite, e parto para a inserção real, pois o db está recebendo os dados.
 
+Quando faço a consulta de dados (await db.all()), o banco me retorna os dados salvos no banco de dados em forma de array, com diversos objetos dentro. Na segunda 
+pesquisa, o mayk trouxe as aulas do professor e os dados do proffy, isso porque as tabelas estão relacionadas, para ter acesso as informações da segunda tabela,
+eu tenho que carregar a primeira junto...
 
+Para fazer a união delas e trazer todas as informações:
+
+```
+SELECT classes.*, proffys.*
+FROM proffys
+JOIN classes ON (classes.proffy_id = proffysid)
+WHERE classes.proffy_id = 1 - número de registro
+...depois, WHERE EXISTS...
+```
+
+PS: `const {sbject, weekday, getSubject} = require ('./utils/format')` desta forma eu já estou desestruturando a variável const em vez de dar um nome a ela 
+e depois ter que usar `format.subject`... por exemplo.
+
+É uma boa prática usar o `try catch error`, pois se houver erros no banco de dados é possível saber quais são. No caso de uma falha do promisse, por exemplo.
+
+O fluxo até agora é db.js abre o banco de dados e cria as tabelas, se necessário e retorna o db, que eu pego no arquivo pages.js... ai criamos uma variável
+em que ela passa o db pela query `const proffys = await db.all(query)`
+
+Quando eu enviar a pesquisa, preciso preparar o servidor para receber os dados com o comando:
+.use(express.urlencoded({extended:true}))
+
+E envio para a função pela rota:
+.post ("/save class', saveClasses)
+
+Essa função vai ser feita no arquivo pages.js
+function saveClasses(req, res) {
+}
+
+E exporto ela no module.exports do page.js
+E recupero ela no server na variavel const no ínício.
+Me parece que eu tenho que colocar a função separada do arquivo server.js
+
+No HTML (give-classes.html) eu coloco no <form>:
+
+<form action="save-classes" method="post">
+
+ASsim escondo as informações da pesquisa no url.
